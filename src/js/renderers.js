@@ -39,18 +39,18 @@ export const feedChannelPosts = (rootId, posts) => {
   root.innerHTML = list;
 };
 
-export const findRssForm = (formId, isValid, message = '', inputValue = '') => {
+export const findRssForm = (formId, formState) => {
   const form = document.getElementById(formId);
   const input = form.querySelector('#find-rss-input');
   const submitBtn = form.querySelector('#submit-btn');
-  const notification = form.querySelector('#notification');
+  const formNotification = form.querySelector('#notification');
 
-  if (isValid) {
+  if (formState.isValid) {
     input.classList.remove('is-invalid');
   } else {
     input.classList.add('is-invalid');
   }
-  input.value = inputValue;
-  submitBtn.disabled = !isValid;
-  notification.textContent = message;
+  input.value = formState.inputValue;
+  submitBtn.disabled = formState.isSubmitDisabled;
+  formNotification.textContent = formState.notification;
 };

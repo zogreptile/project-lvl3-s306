@@ -1,9 +1,10 @@
-export const getXml = (str) => {
+const getXml = (str) => {
   const parser = new DOMParser();
   return parser.parseFromString(str, 'application/xml');
 };
 
-export const getChannelInfo = (xml) => {
+export const getChannelInfo = (str) => {
+  const xml = getXml(str);
   const title = xml.querySelector('title').textContent;
   const description = xml.querySelector('description').textContent;
 
@@ -13,7 +14,8 @@ export const getChannelInfo = (xml) => {
   };
 };
 
-export const getChannelPosts = (xml) => {
+export const getChannelPosts = (str) => {
+  const xml = getXml(str);
   const items = [...xml.getElementsByTagName('item')];
 
   return items.map((post) => {
