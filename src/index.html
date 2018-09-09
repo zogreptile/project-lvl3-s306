@@ -13,13 +13,14 @@
         <div class="col-md-6">
           <h1 class="display-4">Add rss feed</h1>
           <hr class="my-4">
-          <form id="find-rss-form">
+          <form class="position-relative" id="find-rss-form">
             <div class="input-group">
               <input type="text" class="form-control" id="find-rss-input" placeholder="Enter RSS feed address">
               <div class="input-group-append">
-                <button type="submit" class="btn btn-primary">Add</button>
+                <button class="btn btn-primary" id="submit-btn" type="submit" disabled>Add</button>
               </div>
             </div>
+            <small class="form-text text-muted position-absolute" id="notification"></small>
           </form>
         </div>
       </div>
@@ -29,11 +30,11 @@
     <div class="row">
       <div class="col-sm-4">
         <h2 class="mb-30">Feeds</h2>
-        <ul class="list-group list-group-flush" id="feeds"></ul>
+        <div id="feeds"></div>
       </div>
       <div class="col-sm-8">
         <h2 class="mb-30">Posts</h2>
-        <ul class="list-group list-group-flush" id="posts"></ul>
+        <div id="posts"></div>
       </div>
     </div>
   </div>
