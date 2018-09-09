@@ -75,7 +75,7 @@ const app = () => {
 
     $modal.find('.modal-title').text(post.title);
     $modal.find('.modal-body').text(stripTags(post.description));
-    $modal.find('.modal-footer .btn-link').attr('href', post.link);
+    $modal.find('.js-visit-site').attr('href', post.link);
   });
 };
 
