@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
@@ -62,6 +63,19 @@ const app = () => {
       .catch((err) => {
         state.setFormState({ notification: err });
       });
+  });
+
+  const $modal = $('#preview-modal');
+  $modal.on('show.bs.modal', (event) => {
+    const $button = $(event.relatedTarget);
+    const postId = $button.data('post-id');
+    const post = state.getPosts().find(el => el.id === postId);
+
+    const stripTags = str => str.replace(/<\/?[^>]+(>|$)/g, '');
+
+    $modal.find('.modal-title').text(post.title);
+    $modal.find('.modal-body').text(stripTags(post.description));
+    $modal.find('.modal-footer .btn-link').attr('href', post.link);
   });
 };
 

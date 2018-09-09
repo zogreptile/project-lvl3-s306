@@ -17,11 +17,15 @@ export const getChannelPosts = (xml) => {
   const items = [...xml.getElementsByTagName('item')];
 
   return items.map((post) => {
+    const id = post.querySelector('guid').textContent;
     const title = post.querySelector('title').textContent;
+    const description = post.querySelector('description').textContent;
     const link = post.querySelector('link').textContent;
 
     return {
+      id,
       title,
+      description,
       link,
     };
   });
