@@ -10,6 +10,24 @@ import initWatchers from './js/watchers';
 
 const requestFeed = url => axios.get(`https://thingproxy.freeboard.io/fetch/${url}`);
 
+const updateFeed = (getChannels) => {
+  const channels = getChannels();
+  const urls = channels.map(el => el.url);
+  const requestedData = urls.map(url => requestFeed(url));
+  const isAddedPost = (post, posts) => posts.find(el => el.id === post.id);
+
+  axios.all(requestedData)
+    .then((res) => {
+      const recievedData = res.reduce((acc, chunk) =>
+        [...rss.getChannelPosts(chunk.data), ...acc], []);
+      const newPosts = recievedData.filter(post => !isAddedPost(post, state.getPosts()));
+      state.addPosts(newPosts);
+
+      setTimeout(updateFeed, 5000, getChannels);
+    })
+    .catch(err => console.log(err));
+};
+
 const app = () => {
   initWatchers();
 
@@ -20,7 +38,6 @@ const app = () => {
     const inputValue = rssInput.value.trim();
 
     if (inputValue === '') {
-      console.log('VAL EMPTY');
       state.setFormState({
         isValid: true,
         inputValue,
@@ -28,7 +45,6 @@ const app = () => {
         isSubmitDisabled: true,
       });
     } else if (state.hasChannel(inputValue)) {
-      console.log('VAL DUPLICATE');
       state.setFormState({
         isValid: false,
         inputValue,
@@ -36,7 +52,6 @@ const app = () => {
         isSubmitDisabled: true,
       });
     } else if (!validate.isURL(inputValue)) {
-      console.log('VAL INVALID');
       state.setFormState({
         isValid: false,
         inputValue,
@@ -44,7 +59,6 @@ const app = () => {
         isSubmitDisabled: true,
       });
     } else {
-      console.log('VAL OK');
       state.setFormState({
         isValid: true,
         inputValue,
@@ -88,6 +102,8 @@ const app = () => {
     $modal[0].querySelector('.modal-body').textContent = stripTags(post.description);
     $modal[0].querySelector('.js-visit-site').setAttribute('href', post.link);
   });
+
+  updateFeed(state.getChannels.bind(state));
 };
 
 app();
