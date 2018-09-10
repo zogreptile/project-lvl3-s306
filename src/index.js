@@ -2,11 +2,14 @@ import $ from 'jquery';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
-import './styles/styles.css';
+
 import * as rss from './js/rss-parser';
-import state from './js/state';
-import validate from './js/validators';
+import initState from './js/state';
+import validator from './js/validators';
 import initWatchers from './js/watchers';
+
+const state = initState();
+initWatchers(state);
 
 const requestFeed = url => axios.get(`https://thingproxy.freeboard.io/fetch/${url}`);
 
@@ -25,12 +28,13 @@ const updateFeed = (getChannels) => {
 
       setTimeout(updateFeed, 5000, getChannels);
     })
-    .catch(err => console.log(err));
+    .catch((err) => {
+      console.log(err);
+      setTimeout(updateFeed, 5000, getChannels);
+    });
 };
 
 const app = () => {
-  initWatchers();
-
   const rssForm = document.getElementById('find-rss-form');
   const rssInput = document.getElementById('find-rss-input');
 
@@ -51,7 +55,7 @@ const app = () => {
         notification: 'Feed already added!',
         isSubmitDisabled: true,
       });
-    } else if (!validate.isURL(inputValue)) {
+    } else if (!validator.isURL(inputValue)) {
       state.setFormState({
         isValid: false,
         inputValue,
@@ -74,7 +78,7 @@ const app = () => {
 
     requestFeed(rssInput.value)
       .then((res) => {
-        if (validate.isRss(res.data)) {
+        if (validator.isRss(res.data)) {
           const { title, description } = rss.getChannelInfo(res.data);
           const channelPosts = rss.getChannelPosts(res.data);
 
@@ -98,9 +102,9 @@ const app = () => {
 
     const stripTags = str => str.replace(/<\/?[^>]+(>|$)/g, '');
 
-    $modal[0].querySelector('.modal-title').textContent = post.title;
-    $modal[0].querySelector('.modal-body').textContent = stripTags(post.description);
-    $modal[0].querySelector('.js-visit-site').setAttribute('href', post.link);
+    $modal.find('.modal-title').text(post.title);
+    $modal.find('.modal-body').text(stripTags(post.description));
+    $modal.find('.js-visit-site').attr('href', post.link);
   });
 
   updateFeed(state.getChannels.bind(state));

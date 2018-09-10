@@ -17,7 +17,7 @@ export const feedChannelInfo = (rootId, channels) => {
 export const feedChannelPosts = (rootId, posts) => {
   const items = posts.map(item => `
     <li class="list-group-item pl-0">
-      <div class="post-title">
+      <div class="mb-2">
         <a href="${item.link}" target="_blank">${item.title}</a>
       </div>
       <button

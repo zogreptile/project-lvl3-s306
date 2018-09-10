@@ -1,4 +1,4 @@
-export default {
+const state = {
   formState: {
     isValid: false,
     inputValue: '',
@@ -20,7 +20,7 @@ export default {
     return this.channels.find(el => el.url === url);
   },
   addChannel(url, title, description) {
-    this.channels = [{ url, title, description }, ...this.channels];
+    this.channels.unshift({ url, title, description });
   },
   getPosts() {
     return this.posts;
@@ -29,3 +29,5 @@ export default {
     this.posts = [...newPosts, ...this.posts];
   },
 };
+
+export default () => Object.create(state);
