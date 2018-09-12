@@ -11,7 +11,8 @@ import initWatchers from './js/watchers';
 const state = initState();
 initWatchers(state);
 
-const requestFeed = url => axios.get(`https://thingproxy.freeboard.io/fetch/${url}`);
+const proxyUrl = 'https://thingproxy.freeboard.io/fetch/';
+const requestFeed = url => axios.get(`${proxyUrl}${url}`);
 
 const updateFeed = (getChannels) => {
   const channels = getChannels();
@@ -25,13 +26,11 @@ const updateFeed = (getChannels) => {
         [...rss.getChannelPosts(chunk.data), ...acc], []);
       const newPosts = recievedData.filter(post => !isAddedPost(post, state.getPosts()));
       state.addPosts(newPosts);
-
-      setTimeout(updateFeed, 5000, getChannels);
     })
     .catch((err) => {
       console.log(err);
-      setTimeout(updateFeed, 5000, getChannels);
-    });
+    })
+    .finally(setTimeout(updateFeed, 5000, getChannels));
 };
 
 const app = () => {
